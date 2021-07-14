@@ -1,4 +1,4 @@
-﻿Shader "Kit/GamingBloomOutline AudioLink"
+﻿Shader "Kit/GamingBloomOutline"
 {
     Properties
     {
@@ -14,11 +14,11 @@
         [Enum(Off, 0, On, 1)] _ZWrite ("ZWrite", Int) = 1       
         _ZGaussian ("Z Factor (Gaussian Blur)", Float) = 47.4
         _ZSobel ("Z Factor (Sobel)", Float) = 26.3
-        _Power("AudioLink Power", Float) = 68.46   
 		_Smoothing("Smoothing", Float) = 0.55
 		_Center("Center", Float) = 0.005
 		_Speed("Speed", Float) = 0.21
-        _LumWeight ("Lum Weight", Float) = 5.0
+        _Power("AudioLink Power", Float) = 1.00
+        _LumWeight ("Lum Weight", Vector) = (5.0,0.69,0.44)
         _A2CEdge ("A2C Edges", Range(0,26.85)) = 0.4
         _AlphaWeight ("Alpha Weight", Float) = 0.4
 
@@ -44,6 +44,7 @@
             #pragma fragment frag
             
             #include "UnityCG.cginc"
+            #include "./CGIncludes/AudioLink.cginc"
             #define PI 3.14159265 //TODO: Change to UNITY_PI
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
 
@@ -70,11 +71,11 @@
             float4 _CameraDepthTexture_TexelSize;
             float _ZGaussian;
             float _ZSobel;
-            float _Power;
             float _Speed;
             float _Center;
             float _A2CEdge;
             float _AlphaWeight;
+            float _Power;
 
             static const float _BorderRadius = 5.;
             float3 _LumWeight;
@@ -247,6 +248,9 @@
 
                 //Sobel coloring      
                 float derivative = sqrt(colX*colX+colY*colY)/(BORDERRADIUSf*BORDERRADIUSf);
+                //Make it sensitive of screen resolution.
+                derivative *= .0001*length( _ScreenParams.xy );                
+                
                 float angle = atan2(colY * _LumWeight, colX * _LumWeight)/(2.*UNITY_PI)+_Time.y*(1.-dx)/2.;                
 
                 float3 cw = float3(derivative, 1., 1.);
@@ -256,7 +260,11 @@
                 float3 dw = hsv2rgb_smooth(cw);
                 float3 dwa = hsv2rgb_smooth(cwa);
                 //Setup audiolink
-
+                //If we have audiolink, use autocorrelator for a simple hueshifting more effect.
+                if(AudioLinkIsAvailable()) {
+                    float cwal = AudioLinkLerp( ALPASS_AUTOCORRELATOR + float2( cw.r * AUDIOLINK_WIDTH, 0. ) )*_Power;
+                    dwa.r += lerp(cwal,_Power, dy);
+                }
                 
                 float dlum = pow(derivative*_LumWeight*3., 3.)*5.;
                 float4 dw3 = float4(dw, dlum);
