@@ -83,6 +83,7 @@ Material:
     - _Speed: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UseAudioLink: 0
     - _ZBias: 0
     - _ZGaussian: 47.4
     - _ZSobel: 26.3
