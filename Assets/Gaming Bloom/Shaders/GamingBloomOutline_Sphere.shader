@@ -44,7 +44,7 @@
             #pragma fragment frag
             
             #include "UnityCG.cginc"
-            #include "./CGIncludes/AudioLink.cginc"
+            #include "AudioLink.cginc"
             #define PI 3.14159265 //TODO: Change to UNITY_PI
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
 

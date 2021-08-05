@@ -45,7 +45,7 @@
             #pragma fragment frag
             
             #include "UnityCG.cginc"
-            #include "./CGIncludes/AudioLink.cginc"
+            #include "AudioLink.cginc"
 
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
 
