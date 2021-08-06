@@ -1,4 +1,4 @@
-# Gaming Shroom
+# Gamer Shrooms
 Hey gamers these are some mushrooms with shader effects.
 
 Uses MIT License.
