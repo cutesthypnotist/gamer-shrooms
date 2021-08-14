@@ -806,15 +806,15 @@ float shEvaluateDiffuseL1Geomerics_local(float L0, float3 L1, float3 n)
 inline UnityGI UnityGlobalIllumination_SCSS (UnityGIInput data, half occlusion, half3 normalWorld, Unity_GlossyEnvironmentData glossIn)
 {
     UnityGI o_gi = UnityGI_Base(data, occlusion, normalWorld);
-	#if defined(SAMPLE_SH_NONLINEAR) 
-	    float3 L0 = float3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
-	    float3 nonLinearSH = float3(0,0,0); 
-	    nonLinearSH.r = shEvaluateDiffuseL1Geomerics_local(L0.r, unity_SHAr.xyz, normalWorld);
-	    nonLinearSH.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, normalWorld);
-	    nonLinearSH.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, normalWorld);
-	    nonLinearSH = max(nonLinearSH, 0);
-	    o_gi.indirect.diffuse += nonLinearSH * occlusion;
-    #endif
+
+	float3 L0 = float3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
+	float3 nonLinearSH = float3(0,0,0); 
+	nonLinearSH.r = shEvaluateDiffuseL1Geomerics_local(L0.r, unity_SHAr.xyz, normalWorld);
+	nonLinearSH.g = shEvaluateDiffuseL1Geomerics_local(L0.g, unity_SHAg.xyz, normalWorld);
+	nonLinearSH.b = shEvaluateDiffuseL1Geomerics_local(L0.b, unity_SHAb.xyz, normalWorld);
+	nonLinearSH = max(nonLinearSH, 0);
+	o_gi.indirect.diffuse += nonLinearSH * occlusion;
+
     o_gi.indirect.specular = UnityGI_IndirectSpecular(data, occlusion, glossIn) ;
     return o_gi;
 }
