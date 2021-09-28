@@ -1380,6 +1380,85 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 198808306}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &205952253
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2197576857362651075, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.127
+      objectReference: {fileID: 0}
+    - target: {fileID: 2197576857362651075, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176707, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_Name
+      value: Gaming Bloom Tester (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.206
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3686961086469176708, guid: 6dbbb809f7eafc94eb7274630154139c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6dbbb809f7eafc94eb7274630154139c, type: 3}
 --- !u!1 &241372448
 GameObject:
   m_ObjectHideFlags: 0
@@ -8003,6 +8082,75 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1539953083
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.058
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.526
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.391
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861565785235294552, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6780316865116988044, guid: c8ca6721f7a94d549810dc53c6a69d67,
+        type: 3}
+      propertyPath: m_Name
+      value: Gaming Bloom Shroom (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c8ca6721f7a94d549810dc53c6a69d67, type: 3}
 --- !u!1 &1539991597
 GameObject:
   m_ObjectHideFlags: 0

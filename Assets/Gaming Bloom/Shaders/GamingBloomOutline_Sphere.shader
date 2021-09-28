@@ -1,4 +1,4 @@
-﻿Shader "Kit/GamingBloomOutline"
+﻿Shader "Kit/GamingBloomOutline Mushroom"
 {
     Properties
     {
@@ -17,27 +17,28 @@
 		_Smoothing("Smoothing", Float) = 0.55
 		_Center("Center", Float) = 0.005
 		_Speed("Speed", Float) = 0.21
-        _Power("AudioLink Power", Float) = 1.00
+        _BorderRadius ("Border Radius", Float) = 11
         _LumWeight ("Lum Weight", Vector) = (5.0,0.69,0.44)
         _A2CEdge ("A2C Edges", Range(0,26.85)) = 0.4
         _AlphaWeight ("Alpha Weight", Float) = 0.4
+        [ToggleUI] _UseAudioLink ("AudioLink", Float) = 0.0
 
     }
     SubShader
     {
         Tags { "RenderType"="Transparent" "Queue"="Transparent+100" "LightMode"="ForwardBase"}
-        Pass
-        {
-            ZWrite On
-            ColorMask 0
-        }        
+  //      Pass
+  //      {
+   //         ZWrite On
+    //        ColorMask 0
+     //   }        
         Pass
         {
             AlphaToMask On
             ZWrite [_ZWrite]
             Cull [_Cull]
             Blend [_SourceBlend] [_DestinationBlend]
-            ZTest [_ZTest]    
+            ZTest [_ZTest]
             CGPROGRAM
             #pragma target 5.0
             #pragma vertex vert
@@ -45,7 +46,7 @@
             
             #include "UnityCG.cginc"
             #include "AudioLink.cginc"
-            #define PI 3.14159265 //TODO: Change to UNITY_PI
+
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
 
             struct vi
@@ -75,12 +76,11 @@
             float _Center;
             float _A2CEdge;
             float _AlphaWeight;
-            float _Power;
 
-            static const float _BorderRadius = 5.;
+            float _BorderRadius;
             float3 _LumWeight;
-            #define BORDERRADIUSf 5.
-            #define BORDERRADIUS22f 25.
+            #define BORDERRADIUSf float(_BorderRadius)
+            #define BORDERRADIUS22f float(_BorderRadius*_BorderRadius)
 
             // I'm sorry.
             static vo vop;
@@ -111,12 +111,37 @@
             vo vert (vi v)
             {
                 vo o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+
+				//Cursed mechansm to draw effect on top. https://forum.unity.com/threads/pull-to-camera-shader.459767/
+                float3 pullPos = mul(unity_ObjectToWorld,v.vertex);
+                // Determine cam direction (needs Normalize)
+                float3 camDirection=_WorldSpaceCameraPos-pullPos; 
+				float camdist = length(camDirection);
+				camDirection = normalize( camDirection );
+                // Pull in the direction of the camera by a fixed amount
+				float dotdepth = camdist;
+				float moveamount = 5;
+                float near = _ProjectionParams.y*1.8; //Center of vision hits near, but extremes may exceed.
+				if( moveamount > dotdepth-1 ) moveamount = dotdepth-1;
+                float3 camoff = camDirection*moveamount;
+                pullPos+=camoff;
+
+                // Convert to clip space              
+                o.vertex=mul(UNITY_MATRIX_VP,float4(pullPos,1));
+
                 o.uv = v.uv;
                 o.wpos = mul(unity_ObjectToWorld, v.vertex);
                 o.dgpos = ComputeGrabScreenPos(o.vertex);
-                o.rd.xyz = o.wpos.xyz - _WorldSpaceCameraPos.xyz;
+                o.rd.xyz = o.wpos.xyz - _WorldSpaceCameraPos.xyz + camoff;
                 o.rd.w = dot(o.vertex, ObliqueFrustumCorrection);
+
+//				//Push out Z so that this appears on top even though it's only drawing backfaces.
+//				float z = o.vertex.z * o.vertex.w;
+//				//z += 1.8;
+//				//if( z < 3 ) z = 3;
+//				float zadjust = 150;
+//				z += zadjust / (1000-.3);
+//				o.vertex.z = z / o.vertex.w;
                 return o;
             }
             
@@ -164,7 +189,7 @@
 
             float kerneledge(int a, int b)
             {
-                return float(a)*exp(-float(a*a+b*b)*0.04)*0.2;
+                return float(a)*exp(-float(a*a+b*b)/BORDERRADIUS22f)/BORDERRADIUSf;
             }
 
             float sampleDepth(float2 uv)
@@ -172,20 +197,16 @@
                 return sqrt((max(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv.xy),0.)));
             }
 
-            float ftimeBounce(float x)
-            {
-                return -3. * sin(PI * x) + x;
-            }
-
             float4 frag (vo __vo, out uint Coverage[1] : SV_Coverage) : SV_Target
             {
                 vop = __vo;
-           
+
                 float w = 1.f / vop.vertex.w;
                 float4 rd = vop.rd * w;
                 float2 dgpos = vop.dgpos.xy * w;
-                #ifndef UNITY_UV_STARTS_AT_TOP
-                    dgpos.y = 1.0-dgpos.y;
+                
+                #ifdef UNITY_UV_STARTS_AT_TOP
+                    dgpos.y = lerp(dgpos.y, 1 - dgpos.y, step(0, _ProjectionParams.x));
                 #endif
 
                 //Mostly adapted from d4rkplayer 
@@ -200,7 +221,7 @@
 					return float4(0.,0.,0.,0.);     
 
                 //Compute a 13x13 gaussian blur kernel do convolution 
-                const int mSize = 11;
+                const int mSize = 5;
                 const int kSize = (mSize-1)/2;
                 float kernel[mSize];
                 const float sigma = 7.;
@@ -248,24 +269,23 @@
 
                 //Sobel coloring      
                 float derivative = sqrt(colX*colX+colY*colY)/(BORDERRADIUSf*BORDERRADIUSf);
-                //Make it sensitive of screen resolution.
-                derivative *= .0001*length( _ScreenParams.xy );                
-                
                 float angle = atan2(colY * _LumWeight, colX * _LumWeight)/(2.*UNITY_PI)+_Time.y*(1.-dx)/2.;                
 
+				//Make it sensitive of screen resolution.
+				derivative *= .0001*length( _ScreenParams.xy );
+
+                //Setup audiolink
                 float3 cw = float3(derivative, 1., 1.);
                 float3 cwa = float3(angle, 1.,1.);
-
+                //If we have audiolink, use autocorrelator for a simple hueshifting more effect.
+                if(AudioLinkIsAvailable()) {
+                    float cwal = AudioLinkLerp( ALPASS_AUTOCORRELATOR + float2( cw.r * AUDIOLINK_WIDTH, 0. ) )*.03;
+                    cw.r += cwal;
+                    cwa.r += cwal;
+                }
                 //Convert derviative and derivative with angle values to hue and alpha values.
                 float3 dw = hsv2rgb_smooth(cw);
                 float3 dwa = hsv2rgb_smooth(cwa);
-                //Setup audiolink
-                //If we have audiolink, use autocorrelator for a simple hueshifting more effect.
-                if(AudioLinkIsAvailable()) {
-                    float cwal = AudioLinkLerp( ALPASS_AUTOCORRELATOR + float2( cw.r * AUDIOLINK_WIDTH, 0. ) )*_Power;
-                    dwa.r += lerp(cwal,_Power, dy);
-                }
-                
                 float dlum = pow(derivative*_LumWeight*3., 3.)*5.;
                 float4 dw3 = float4(dw, dlum);
                 float4 dwa3 = float4(dwa, dlum);

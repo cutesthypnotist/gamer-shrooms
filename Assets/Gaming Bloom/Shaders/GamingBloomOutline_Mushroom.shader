@@ -107,41 +107,7 @@
 			}
 			static bool IsInMirror = CalculateIsInMirror();
 			#undef UMP
-            
-            //https://github.com/cutesthypnotist/HakanaiShaderCommons/blob/main/ELUnityUtilities.cginc
-            float4x4 ELMatrixInverse(float4x4 input)
-            {
-                #define minor(a, b, c) determinant(float3x3(input.a, input.b, input.c))
-            
-                float4x4 cofactors = float4x4(
-                    minor(_22_23_24, _32_33_34, _42_43_44), 
-                -minor(_21_23_24, _31_33_34, _41_43_44),
-                    minor(_21_22_24, _31_32_34, _41_42_44),
-                -minor(_21_22_23, _31_32_33, _41_42_43),
-                
-                -minor(_12_13_14, _32_33_34, _42_43_44),
-                    minor(_11_13_14, _31_33_34, _41_43_44),
-                -minor(_11_12_14, _31_32_34, _41_42_44),
-                    minor(_11_12_13, _31_32_33, _41_42_43),
-                
-                    minor(_12_13_14, _22_23_24, _42_43_44),
-                -minor(_11_13_14, _21_23_24, _41_43_44),
-                    minor(_11_12_14, _21_22_24, _41_42_44),
-                -minor(_11_12_13, _21_22_23, _41_42_43),
-                
-                -minor(_12_13_14, _22_23_24, _32_33_34),
-                    minor(_11_13_14, _21_23_24, _31_33_34),
-                -minor(_11_12_14, _21_22_24, _31_32_34),
-                    minor(_11_12_13, _21_22_23, _31_32_33));
-
-            #undef minor
-            return transpose(cofactors) / determinant(input);
-            }
-
-            float3 ELClipToObjectPos(float4 clipPos)
-            {
-                return mul(unity_WorldToObject, mul(ELMatrixInverse(UNITY_MATRIX_VP), clipPos)).xyz;
-            }                 
+      
             vo vert (vi v)
             {
                 vo o;
@@ -238,8 +204,9 @@
                 float w = 1.f / vop.vertex.w;
                 float4 rd = vop.rd * w;
                 float2 dgpos = vop.dgpos.xy * w;
-                #ifndef UNITY_UV_STARTS_AT_TOP
-                    dgpos.y = 1.0-dgpos.y;
+                
+                #ifdef UNITY_UV_STARTS_AT_TOP
+                    dgpos.y = lerp(dgpos.y, 1 - dgpos.y, step(0, _ProjectionParams.x));
                 #endif
 
                 //Mostly adapted from d4rkplayer 
@@ -307,6 +274,7 @@
 				//Make it sensitive of screen resolution.
 				derivative *= .0001*length( _ScreenParams.xy );
 
+                //Setup audiolink
                 float3 cw = float3(derivative, 1., 1.);
                 float3 cwa = float3(angle, 1.,1.);
                 //If we have audiolink, use autocorrelator for a simple hueshifting more effect.
