@@ -205,7 +205,7 @@
                 float4 rd = vop.rd * w;
                 float2 dgpos = vop.dgpos.xy * w;
                 
-                #ifdef UNITY_UV_STARTS_AT_TOP
+                #if UNITY_UV_STARTS_AT_TOP
                     dgpos.y = lerp(dgpos.y, 1 - dgpos.y, step(0, _ProjectionParams.x));
                 #endif
 
